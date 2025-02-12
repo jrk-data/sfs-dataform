@@ -1,6 +1,6 @@
 config {
   type: "operations",
-  dependencies:"midfielders_log",
+  dependencies:"midfielders_log_assertion",
   description: "Elimina e inserta datos en la tabla 'midfielders' usando los datos más recientes de 'midfielders_log'.",
   tags: ["defender","insert"]
 }

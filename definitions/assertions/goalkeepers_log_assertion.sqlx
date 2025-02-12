@@ -1,0 +1,9 @@
+config {
+  type: "assertion",
+  dependencies:"goalkeepers_log",
+  }
+
+
+SELECT  True
+FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_goalkeepers_log}
+WHERE date(ingestedAt) = CURRENT_DATE()

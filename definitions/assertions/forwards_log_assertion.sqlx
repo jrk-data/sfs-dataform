@@ -1,0 +1,9 @@
+config {
+  type: "assertion",
+  dependencies:"forwards_log",
+  }
+
+
+SELECT  True
+FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_forwards_log}
+WHERE date(ingestedAt) = CURRENT_DATE()

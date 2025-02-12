@@ -59,7 +59,7 @@ offsides
 , saves as total
 ) as saves
 , hashRow
-, cast(dateTimestamp as timestamp) as ingestedAt
+ , cast(dateTimestamp as timestamp) as ingestedAt
 from  ${schemas.stg_project}.${schemas.sfs}.${schemas.stg_defenders} 
 ) s ON 
     s.hashRow = t.hashRow
