@@ -6,4 +6,4 @@ config {
 
 SELECT  True as updated
 FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_defenders_log}
-WHERE date(ingestedAt) = CURRENT_DATE()
+WHERE date(ingestedAt) != CURRENT_DATE()
