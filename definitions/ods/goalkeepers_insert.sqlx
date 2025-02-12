@@ -1,6 +1,6 @@
 config {
   type: "operations",
-  dependencies:"goalkeepers_log",
+  dependencies:"goalkeepers_log_assertion",
   description: "Elimina e inserta datos en la tabla 'goalkeepers' usando los datos más recientes de 'goalkeepers_log'.",
   tags: ["defender","insert"]
 }

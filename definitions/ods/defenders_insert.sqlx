@@ -1,6 +1,6 @@
 config {
   type: "operations",
-  dependencies:"defenders_log",
+  dependencies:"defenders_log_assertion",
   description: "Elimina e inserta datos en la tabla 'defenders' usando los datos más recientes de 'defenders_log'.",
   tags: ["defender","insert"]
 }

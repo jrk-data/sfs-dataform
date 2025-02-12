@@ -1,6 +1,6 @@
 config {
   type: "operations",
-  dependencies:"forwards_log",
+  dependencies:"forwards_log_assertion",
   description: "Elimina e inserta datos en la tabla 'forwards' usando los datos más recientes de 'forwards_log'.",
   tags: ["defender","insert"]
 }
