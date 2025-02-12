@@ -1,0 +1,68 @@
+-- Config blocks allow you to configure, document, and test your data assets.
+config {
+  database: "ods-fit",
+  schema: "sfs",
+  name: "defenders_log",
+  type: "operations",
+  tags: ["log"]
+}
+
+-- The rest of a SQLX file contains your SELECT statement used to create the table.
+
+MERGE ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_defenders_log} AS t
+USING 
+(
+select 
+team
+,team_id  as teamId
+,player
+,player_id as playerId
+,'defender' as position
+,appearances
+,struct(
+  aerialDuelsWon as aerial
+, groundDuelsWon as gound
+, totalDuelsWon as total ) as duelsWon
+, struct(
+  yellowCards as yellow
+, redCards as red) as cards
+,struct(
+  bigChancesCreated
+, bigChancesMissed
+, goals
+, goalsConcededInsideTheBox as  goalsInsideTheBox
+, goalsConcededOutsideTheBox as goalsOutsideTheBox
+) as attack
+,struct(
+  totalShots as total
+  ,blockedShots as blocked
+  ,shotsOnTarget as onTarget
+  , hitWoodwork as woodWork
+) as shots
+,struct(
+clearances
+, interceptions
+) as defender
+, struct(
+  assists
+  , keyPasses
+) as passes
+,struct(
+offsides
+, tackles
+, fouls
+, wasFouled
+) as infractions
+,struct(
+  savedShotsFromInsideTheBox as insideBox
+, savedShotsFromOutsideTheBox as ousideBox
+, saves as total
+) as saves
+, hashRow
+, cast(dateTimestamp as timestamp) as ingestedAt
+from  ${schemas.stg_project}.${schemas.sfs}.${schemas.stg_defenders} 
+) s ON 
+    s.hashRow = t.hashRow
+  WHEN NOT MATCHED BY TARGET THEN
+  INSERT ROW
+ 

@@ -1,0 +1,51 @@
+config {
+  type: "operations",
+  dependencies:"defenders_log",
+  description: "Elimina e inserta datos en la tabla 'defenders' usando los datos más recientes de 'defenders_log'.",
+  tags: ["defender","insert"]
+}
+
+/*
+traer registros que se actualizaron, borrarlos*/
+DECLARE dateFrom date default DATE_SUB(CURRENT_DATE(), INTERVAL ${features.dateFrom} DAY);
+
+BEGIN TRANSACTION;
+
+-- Eliminar los registros en ods-fit.sfs.defenders cuyos id se encuentren en defenders_log en los días declarados en la variable dateFrom
+DELETE FROM  ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_defenders}
+WHERE playerId IN (
+  SELECT playerId
+  FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_defenders_log}
+  WHERE date(ingestedAt) >= dateFrom
+);
+
+-- Insertar los registros modificados y nuevos en ods-appa.transactions
+INSERT INTO ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_defenders}
+WITH recent_logs AS (
+  SELECT *
+  FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_defenders_log}
+  WHERE date(ingestedAt) >= dateFrom
+)
+SELECT 
+  rl.team,
+  rl.teamId,
+  rl.player,
+  rl.playerId,
+  rl.position,
+  rl.appearances,
+  rl.duelsWon,
+  rl.cards,
+  rl.attack,
+  rl.shots,
+  rl.defender,
+  rl.passes,
+  rl.infractions,
+  rl.saves,
+  rl.hashRow,
+  rl.ingestedAt
+FROM recent_logs AS rl
+QUALIFY ROW_NUMBER() OVER (PARTITION BY rl.playerId ORDER BY rl.ingestedAt DESC) = 1;
+-- Se ordenan los registros particionando por id y nos quedamos con el último ingestado
+
+
+COMMIT TRANSACTION;
