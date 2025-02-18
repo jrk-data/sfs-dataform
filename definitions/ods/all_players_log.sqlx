@@ -2,14 +2,14 @@
 config {
   database: "ods-fit",
   schema: "sfs",
-  name: "midfielders_log",
+  name: "all_players_log",
   type: "operations",
   tags: ["log"]
 }
 
 -- The rest of a SQLX file contains your SELECT statement used to create the table.
 
-MERGE ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_midfielders_log} AS t
+MERGE ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_all_players_log} AS t
 USING 
 (
 select 
@@ -17,7 +17,7 @@ team
 ,team_id  as teamId
 ,player
 ,player_id as playerId
-,'midfielder' as position
+,position
 ,appearances
 ,struct(
   aerialDuelsWon as aerial
@@ -59,8 +59,8 @@ offsides
 , saves as total
 ) as saves
 , hashRow
-, cast(dateTimestamp as timestamp) as ingestedAt
-from  ${schemas.stg_project}.${schemas.sfs}.${schemas.stg_midfielders} 
+ , cast(dateTimestamp as timestamp) as ingestedAt
+from  ${schemas.stg_project}.${schemas.sfs}.${schemas.stg_all_players} 
 ) s ON 
     s.hashRow = t.hashRow
   WHEN NOT MATCHED BY TARGET THEN

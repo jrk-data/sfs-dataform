@@ -1,0 +1,12 @@
+config {
+  type: "assertion",
+  description: "Check that the all_players table has been updated",
+  tags: ["assertion"],
+  dependencies: ["all_players_insert"]
+}
+
+with max_update as(
+SELECT   max(date(ingestedAt))  as last_updated_at
+FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_all_players})
+select true as was_updated from max_update 
+WHERE date(last_updated_at) != CURRENT_DATE()

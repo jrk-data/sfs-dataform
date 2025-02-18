@@ -1,0 +1,120 @@
+config {
+  type: "table",
+  description: "Aggregated team statistics based on player performance.",
+  tags: ["teams"],
+  dependencies: ["assertion_all_players"],
+    columns: {
+    team: "Name of the team.",
+
+    duelsWon: {
+      description: "Statistics related to duels won by the team.",
+      columns: {
+        WonTotal: "Total number of duels won.",
+        WonGround: "Number of ground duels won.",
+        WonAerial: "Number of aerial duels won."
+      }
+    },
+
+    cards: {
+      description: "Team's disciplinary record.",
+      columns: {
+        yellow: "Total number of yellow cards received.",
+        red: "Total number of red cards received."
+      }
+    },
+
+    attack: {
+      description: "Offensive statistics of the team.",
+      columns: {
+        bigChancesCreaqted: "Total big chances created by the team.",
+        bigChancesMissed: "Total big chances missed by the team.",
+        goals: "Total goals scored by the team."
+      }
+    },
+
+    shots: {
+      description: "Shot-related statistics.",
+      columns: {
+        total: "Total number of shots attempted.",
+        blocked: "Total number of blocked shots.",
+        onTarget: "Total shots on target.",
+        woodWork: "Total shots that hit the woodwork."
+      }
+    },
+
+    defender: {
+      description: "Defensive actions performed by the team.",
+      columns: {
+        clearances: "Total clearances made by defenders.",
+        interceptions: "Total interceptions made by defenders."
+      }
+    },
+
+    passes: {
+      description: "Passing statistics of the team.",
+      columns: {
+        assists: "Total number of assists.",
+        keyPasses: "Total number of key passes."
+      }
+    },
+
+    infractions: {
+      description: "Infractions committed by the team.",
+      columns: {
+        offsides: "Total offsides committed.",
+        tackles: "Total tackles made.",
+        fouls: "Total fouls committed.",
+        wasFouled: "Total times players were fouled."
+      }
+    },
+
+    saves: {
+      description: "Goalkeeping performance.",
+      columns: {
+        insideBox: "Total saves made inside the box.",
+        outsideBox: "Total saves made outside the box.",
+        total: "Total saves made."
+      }
+    }
+  }
+}
+
+select 
+team
+,struct(
+sum(duelsWon.total) as WonTotal
+,sum(duelsWon.ground) as WonGround
+,sum(duelsWon.aerial) as WonAerial ) as duelsWon
+,struct(
+sum(cards.yellow) as yellow
+,sum(cards.red) as red) as cards
+,struct(
+  sum(attack.bigChancesCreated) as bigChancesCreaqted
+,sum(attack.bigChancesMissed) as bigChancesMissed
+,sum(attack.goals) as goals ) as attack
+,struct(
+sum(shots.total) as total
+,sum(shots.blocked) as blocked
+,sum(shots.onTarget) as onTarget
+,sum(shots.woodWork) as woodWork) as shots
+,struct(
+sum(defender.clearances) as clearances
+,sum(defender.interceptions) as interceptions
+) as defender
+, struct(
+sum(passes.assists) as assists
+,sum(passes.keyPasses) as keyPasses
+) as passes
+,struct(
+sum(infractions.offsides) as offsides
+,sum(infractions.tackles) as tackles
+,sum(infractions.fouls) as fouls 
+,sum(infractions.wasFouled) as wasFouled 
+) as infractions
+,struct(
+sum(saves.insideBox) as insideBox
+,sum(saves.outsideBox) as outsideBox
+,sum(saves.total) as total
+) as saves
+from ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_all_players}
+group by team

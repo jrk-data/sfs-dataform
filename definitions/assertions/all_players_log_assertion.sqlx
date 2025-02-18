@@ -1,0 +1,11 @@
+config {
+  type: "assertion",
+  dependencies:"all_players_log",
+  }
+
+
+with max_update as(
+SELECT   max(date(ingestedAt))  as last_updated_at
+FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_all_players_log})
+select true as was_updated from max_update 
+WHERE date(last_updated_at) != CURRENT_DATE()

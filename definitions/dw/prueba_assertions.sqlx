@@ -1,8 +1,0 @@
-config {
-  type: "operations",
-  description: "Prueba si corre aunque una assertion no pase",
-  tags: ["teams"],
-  dependencies: ["defenders_insert", "midfielders_insert", "goalkeepers_insert", "forwards_insert"]
-}
-
-select 1
