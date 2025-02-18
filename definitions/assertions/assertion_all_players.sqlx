@@ -1,0 +1,33 @@
+/*config {
+  type: "assertion",
+  description: "Prueba si corre aunque una assertion no pase",
+  tags: ["teams"],
+  dependencies: ["defenders_insert", "midfielders_insert", "goalkeepers_insert", "forwards_insert"]
+}
+
+with almost_one as (
+(with max_update as(
+SELECT   max(date(ingestedAt))  as last_updated_at
+FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_defenders})
+select true as was_updated from max_update 
+WHERE date(last_updated_at) != CURRENT_DATE())
+union all 
+(with max_update as(
+SELECT   max(date(ingestedAt))  as last_updated_at
+FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_forwards})
+select true as was_updated from max_update 
+WHERE date(last_updated_at) != CURRENT_DATE())
+union all 
+(with max_update as(
+SELECT   max(date(ingestedAt))  as last_updated_at
+FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_goalkeepers})
+select true as was_updated from max_update 
+WHERE date(last_updated_at) != CURRENT_DATE())
+union all 
+(with max_update as(
+SELECT   max(date(ingestedAt))  as last_updated_at
+FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_midfielders})
+select true as was_updated from max_update 
+WHERE date(last_updated_at) != CURRENT_DATE())
+)
+select max(was_updated) as almost_one_updated from almost_one*/
