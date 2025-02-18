@@ -31,6 +31,7 @@ const ods_all_players = 'all_players'
 
 // DW tables
 const dw_all_players = 'all_players'
+const dw_teams = 'teams'
 
  module.exports = {
     //Export Projects
@@ -64,4 +65,5 @@ const dw_all_players = 'all_players'
 
     // Export DW tables
     dw_all_players
+    ,dw_teams
 }
