@@ -1,6 +1,8 @@
 config {
   type: "table",
   description: "Aggregated team statistics based on player performance.",
+  database: "dw-fit-450902",
+  schema: "sfs",
   tags: ["teams"],
   dependencies: ["assertion_all_players"],
     columns: {
@@ -22,7 +24,6 @@ config {
         red: "Total number of red cards received."
       }
     },
-
     attack: {
       description: "Offensive statistics of the team.",
       columns: {
