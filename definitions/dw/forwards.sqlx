@@ -1,0 +1,51 @@
+config {
+  type: "operations",
+  dependencies:"assertion_all_players",
+  description: "Deletes and inserts data into table 'forwards' using the most recent data from 'all_players'.",
+  tags: ["forwards"]
+}
+
+/*
+traer registros que se actualizaron, borrarlos*/
+DECLARE dateFrom date default DATE_SUB(CURRENT_DATE(), INTERVAL ${features.dateFrom} DAY);
+
+BEGIN TRANSACTION;
+
+-- Eliminar los registros en ods-fit.sfs.forwards cuyos id se encuentren en forwards_log en los días declarados en la variable dateFrom
+DELETE FROM  ${schemas.dw_project}.${schemas.sfs}.${schemas.dw_forwards}
+WHERE playerId IN (
+  SELECT playerId
+  FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_all_players}
+  WHERE date(ingestedAt) >= dateFrom and lower(position) = 'forwards'
+);
+
+-- Insertar los registros modificados y nuevos en ods-appa.transactions
+INSERT INTO ${schemas.dw_project}.${schemas.sfs}.${schemas.dw_forwards}
+WITH recent_logs AS ( 
+  SELECT *
+  FROM ${schemas.ods_project}.${schemas.sfs}.${schemas.ods_all_players}
+  WHERE date(ingestedAt) >= dateFrom and lower(position) = 'forwards'
+)
+SELECT 
+  rl.team,
+  rl.teamId,
+  rl.player,
+  rl.playerId,
+  rl.position,
+  rl.appearances,
+  rl.duelsWon,
+  rl.cards,
+  rl.attack,
+  rl.shots,
+  rl.defender,
+  rl.passes,
+  rl.infractions,
+  rl.saves,
+  rl.hashRow,
+  rl.ingestedAt
+FROM recent_logs AS rl
+QUALIFY ROW_NUMBER() OVER (PARTITION BY rl.playerId ORDER BY rl.ingestedAt DESC) = 1;
+-- Se ordenan los registros particionando por id y nos quedamos con el último ingestado
+
+
+COMMIT TRANSACTION;
