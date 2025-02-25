@@ -33,7 +33,7 @@ const ods_all_players = 'all_players'
 const dw_all_players = 'all_players'
 const dw_teams = 'teams'
 const dw_defenders = 'defenders'
-const dw_goalkeepers = 'goalkeerpers'
+const dw_goalkeepers = 'goalkeepers'
 const dw_midfielders = 'midfielders'
 const dw_forwards = 'forwards'
 
